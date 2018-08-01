@@ -1,0 +1,14 @@
+spring:
+  profiles.active: default
+---
+app:
+  remote:
+    git:
+      baseUrl: api.github.com
+      acceptVersionValue: application/vnd.github.v3+json
+      userAgentHeader: User-Agent
+      endpoints:
+        searchRepositories: /search/repositories
+        repositoryContributorStats: /repos/{owner}/{repo}/stats/contributors
+        users: /users/{username}
+      accessToken: putsomethinghere
