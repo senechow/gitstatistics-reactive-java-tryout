@@ -67,23 +67,6 @@ public class RepositoryStatisticsFacadeService {
 
     }
 
-    public Flux<RepositoryStatistic> getRepositories() {
-
-        Map<GitRepository, List<GitContributorStatistics>> gitRepositoryListMap = new LinkedHashMap<>();
-
-        Mono<GitRepositoryEnvelope> gitRepositoryEnvelopeMono = gitRemoteService.getGitRepositories(1);
-        Flux<GitRepository> gitRepositoryFlux = gitRepositoryEnvelopeMono
-                .map(gitRepositoryEnvelope -> gitRepositoryEnvelope.getItems())
-                .flatMapMany(Flux::fromIterable);
-
-        return gitRepositoryFlux.map(gitRepository ->
-                gitRemoteService.getGitRepositoryContributorStatistics(gitRepository.getFull_name(), gitRepository.getOwner().getLogin(), 1))
-                .zipWith(gitRepositoryFlux, ((gitContributorStatistics, gitRepository) -> RepositoryStatistic.builder()
-                        .repository_name(gitRepository.getFull_name())
-                        .build()));
-
-    }
-
     private Flux<Author> buildAuthors(Flux<GitContributorStatistics> gitContributorStatistics) {
 
         return gitContributorStatistics

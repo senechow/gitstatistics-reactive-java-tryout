@@ -22,11 +22,4 @@ public class RepositoryStatisticsController {
     public Flux<RepositoryStatistic> getRepoStatistics(@RequestParam Integer numRepos, @RequestParam Integer numCommits) {
          return repositoryStatisticsFacadeService.getRepositoryStatistics(numRepos, numCommits);
     }
-
-    @GetMapping("/repos")
-    public Flux<RepositoryStatistic> getRepoStatistics() {
-        Flux<RepositoryStatistic> gitRepositoryEnvelopeFlux = repositoryStatisticsFacadeService.getRepositories();
-        return gitRepositoryEnvelopeFlux;
-    }
-
 }
