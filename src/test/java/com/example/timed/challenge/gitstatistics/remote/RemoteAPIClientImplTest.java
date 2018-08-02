@@ -24,23 +24,6 @@ public class RemoteAPIClientImplTest {
     private GitRemoteService gitRemoteService;
 
     @Test
-    public void test_API() {
-
-        RemoteAPIClientImpl<GitRepository> gitRepositoryRemoteAPIClient = new RemoteAPIClientImpl<>();
-
-        Flux<GitRepository> gitRepositoryFlux = gitRepositoryRemoteAPIClient.test()
-                .map(gitRepositoryEnvelope -> gitRepositoryEnvelope.getItems())
-                .flatMapMany(Flux::fromIterable)
-                ;
-
-        StepVerifier.create(gitRepositoryFlux)
-                .expectNextMatches(t -> t.getId() != null && t.getStargazers_count() != null)
-                .verifyComplete()
-        ;
-
-    }
-
-    @Test
     public void test_GetGitRepos() {
 
         Flux<GitRepository> gitRepositoryFlux = gitRemoteService.getGitRepositories(1)

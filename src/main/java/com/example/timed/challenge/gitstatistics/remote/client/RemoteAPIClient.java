@@ -16,5 +16,4 @@ public interface RemoteAPIClient<T> {
 
     Mono<T> makeAPICall(String url, HttpMethod httpMethod, Map<String, String> headers, MultiValueMap<String, String> params, Class<T> responseClass);
 
-    Mono<GitRepositoryEnvelope> test();
 }

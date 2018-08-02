@@ -25,33 +25,6 @@ public class RemoteAPIClientImpl<T> implements RemoteAPIClient<T>{
 
     private static final Logger logger = LoggerFactory.getLogger(RemoteAPIClientImpl.class);
 
-    public Mono<GitRepositoryEnvelope> test() {
-
-        WebClient webClient = WebClient.builder()
-                .defaultHeader("User-Agent", "")
-                .defaultHeader("accept", "application/vnd.github.v3+json")
-                .defaultHeader("authorization", "token 9cdcd99e48ea24d38a1f1a8f51a95206a86edfc4")
-                .build()
-                ;
-
-        URI uri = UriComponentsBuilder.newInstance()
-                .scheme("https")
-                .host("api.github.com/search/repositories")
-                .queryParam("q", "language:clojure")
-                .queryParam("per_page", "1")
-                .build()
-                .toUri()
-                ;
-
-        return webClient.get()
-                .uri(uri)
-                .retrieve()
-                .bodyToMono(GitRepositoryEnvelope.class)
-                .timeout(Duration.ofSeconds(10))
-                .log("category", Level.ALL, SignalType.ON_ERROR, SignalType.ON_COMPLETE, SignalType.CANCEL, SignalType.REQUEST)
-                ;
-    }
-
     @Override
     public Flux<T> makeAPICallList(String url, HttpMethod httpMethod, Map<String, String> headers, MultiValueMap<String, String> params, Class<T> responseClass) {
         Optional<WebClient.ResponseSpec> responseSpecOptional = makeResponseSpec(httpMethod, url, headers, params);

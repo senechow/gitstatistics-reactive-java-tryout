@@ -23,11 +23,6 @@ public class GitRemoteService {
     @Autowired
     private GitRemoteConfig gitRemoteConfig;
 
-    public Mono<GitRepositoryEnvelope> getRepos() {
-        RemoteAPIClient<GitRepositoryEnvelope> remoteAPIClient = new RemoteAPIClientImpl<>();
-        return remoteAPIClient.test();
-    }
-
     public Mono<GitRepositoryEnvelope> getGitRepositories(int numRepos) {
 
         String url = gitRemoteConfig.getBaseUrl() + gitRemoteConfig.getEndpoints().getSearchRepositories();
