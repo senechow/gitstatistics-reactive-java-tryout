@@ -1,4 +1,4 @@
-package com.example.timed.challenge.gitstatistics.remote;
+package com.example.timed.challenge.gitstatistics.remote.client;
 
 import com.example.timed.challenge.gitstatistics.model.remote.repository.GitRepository;
 import com.example.timed.challenge.gitstatistics.remote.service.GitRemoteService;
