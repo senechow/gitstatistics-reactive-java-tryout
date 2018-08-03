@@ -6,6 +6,7 @@ import com.example.timed.challenge.gitstatistics.model.remote.repository.GitRepo
 import com.example.timed.challenge.gitstatistics.model.remote.user.GitUser;
 import com.example.timed.challenge.gitstatistics.remote.client.RemoteAPIClient;
 import com.example.timed.challenge.gitstatistics.remote.client.RemoteAPIClientImpl;
+import com.example.timed.challenge.gitstatistics.util.HttpParamsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
@@ -23,26 +24,25 @@ public class GitRemoteService {
     @Autowired
     private GitRemoteConfig gitRemoteConfig;
 
-    public Mono<GitRepositoryEnvelope> getGitRepositories(int numRepos) {
+    public Mono<GitRepositoryEnvelope> getGitRepositories(Integer numRepos) {
 
         String url = gitRemoteConfig.getBaseUrl() + gitRemoteConfig.getEndpoints().getSearchRepositories();
         Map<String, String> headers = buildHeaders();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("q", "language:clojure");
-        params.add("sort", "stars");
-        params.add("per_page", numRepos + "");
+        params.add(HttpParamsUtil.QUERY, HttpParamsUtil.LANGUAGE_CLOJURE);
+        params.add(HttpParamsUtil.SORT, HttpParamsUtil.STARS);
+        params.add(HttpParamsUtil.PER_PAGE, numRepos.toString());
 
         RemoteAPIClient<GitRepositoryEnvelope> remoteAPIClient = new RemoteAPIClientImpl<>();
         return remoteAPIClient.makeAPICall(url, HttpMethod.GET, headers, params, GitRepositoryEnvelope.class);
 
     }
 
-    public Flux<GitContributorStatistics> getGitRepositoryContributorStatistics(String repoName, String ownerUserName, int numCommits) {
+    public Flux<GitContributorStatistics> getGitRepositoryContributorStatistics(String repoName, String ownerUserName, Integer numCommits) {
 
-        String url = gitRemoteConfig.getBaseUrl() + gitRemoteConfig.getEndpoints().getRepositoryContributorStats().replace("{owner}", ownerUserName).replace("{repo}", repoName);
+        String url = gitRemoteConfig.getBaseUrl() + gitRemoteConfig.getEndpoints().getRepositoryContributorStats().replace(HttpParamsUtil.OWNER_PATH_PARAM, ownerUserName).replace(HttpParamsUtil.REPO_PATH_PARAM, repoName);
         Map<String, String> headers = buildHeaders();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("per_page", numCommits + "");
 
         RemoteAPIClient<GitContributorStatistics> remoteAPIClient = new RemoteAPIClientImpl<>();
         return remoteAPIClient.makeAPICallList(url, HttpMethod.GET, headers, params, GitContributorStatistics.class).take(numCommits);
@@ -51,7 +51,7 @@ public class GitRemoteService {
 
     public Mono<GitUser> getGitUser(String userName) {
 
-        String url = gitRemoteConfig.getBaseUrl() + gitRemoteConfig.getEndpoints().getUsers().replace("{username}", userName);
+        String url = gitRemoteConfig.getBaseUrl() + gitRemoteConfig.getEndpoints().getUsers().replace(HttpParamsUtil.USERNAME_PATH_PARAM, userName);
         Map<String, String> headers = buildHeaders();
 
         RemoteAPIClient<GitUser> remoteAPIClient = new RemoteAPIClientImpl<>();
@@ -61,9 +61,9 @@ public class GitRemoteService {
     private Map<String, String> buildHeaders() {
 
         Map<String, String> headers = new HashMap<>();
-        headers.put("accept", gitRemoteConfig.getAcceptVersionValue());
-        headers.put("authorization", "token " + gitRemoteConfig.getAccessToken());
-        headers.put(gitRemoteConfig.getUserAgentHeader(), "");
+        headers.put(HttpParamsUtil.ACCEPT, gitRemoteConfig.getAcceptVersionValue());
+        headers.put(HttpParamsUtil.AUTHORIZATION, HttpParamsUtil.TOKEN + " " + gitRemoteConfig.getAccessToken());
+        headers.put(gitRemoteConfig.getUserAgentHeader(), HttpParamsUtil.EMPTY_STR);
 
         return headers;
 

@@ -39,7 +39,7 @@ public class RepositoryStatisticsFacadeService {
             ));
 
         return repositoryStatisticFlux
-                .flatMap((repositoryStatistic -> {
+                .flatMap(repositoryStatistic -> {
 
                     Mono<RepositoryStatistic> repositoryStatisticMono = Mono.just(repositoryStatistic);
                     Flux<Author> authorsFlux = repositoryStatistic.getAuthorFlux()
@@ -61,7 +61,7 @@ public class RepositoryStatisticsFacadeService {
                                 .authors(authorList)
                                 .build());
 
-                })).sort((Comparator.comparing(RepositoryStatistic::getStargazers_count)
+                }).sort((Comparator.comparing(RepositoryStatistic::getStargazers_count)
                                         .thenComparing(RepositoryStatistic::getRepository_name))
                                         .reversed());
 
